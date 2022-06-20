@@ -1,0 +1,32 @@
+{
+    "Production": {
+        "appPort": 5000,
+        "dbConfig": {
+            "host": "localhost",
+            "database": "taim",
+            "user": "postgres",
+            "password": "postgres",
+            "port": 5432
+        }
+      },
+      "Staging": {
+        "appPort": 5000,
+        "dbConfig": {
+            "host": "localhost",
+            "database": "taim",
+            "user": "postgres",
+            "password": "postgres",
+            "port": 5432
+        }
+      },
+      "Development": {
+          "appPort": 5000,
+          "dbConfig": {
+            "host": "localhost",
+            "database": "taim",
+            "user": "postgres",
+            "password": "postgres",
+            "port": 5432
+          }
+        }
+}
