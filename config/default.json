@@ -2,7 +2,7 @@
     "Production": {
         "appPort": 5000,
         "dbConfig": {
-            "host": "localhost",
+            "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
             "database": "taim",
             "user": "postgres",
             "password": "postgres",
@@ -12,7 +12,7 @@
       "Staging": {
         "appPort": 5000,
         "dbConfig": {
-            "host": "localhost",
+            "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
             "database": "taim",
             "user": "postgres",
             "password": "postgres",
