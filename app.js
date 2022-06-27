@@ -45,6 +45,18 @@ app.post('/getRanges', function(request, response) {
     db.getRanges(request, response)
 });
 
+app.post('/getSections', function(request, response) {
+    db.getSections(request, response)
+});
+
+app.post('/getSectionsCameraTraps', function(request, response) {
+    db.getSectionsCameraTraps(request, response)
+});
+
+app.post('/getCameraimages', function(request, response) {
+    db.getCameraimages(request, response)
+});
+
 app.post('/getTelanganaCameraTrapLocations', function(request, response) {
     db.getTelanganaCameraTrapLocations(request, response)
 });

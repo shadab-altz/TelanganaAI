@@ -44,9 +44,29 @@ body{
     position: absolute;
     top: 70px;
     left: 10px;
-    width: 250px;
-    height: 200px;
+    width: 300px;
+    height: 220px;
     background-color: #00672d;
+    border: 1px solid #fff8dc;
+}
+
+.panel-heading {
+    margin-left: 20px;
+    margin-top: 10px;
+    color: #fff8dc;
+}
+
+.panel-component {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.admin-panel-button {
+    margin-left: 20px;
+    margin-top: 10px;
+    right: 20px;
+    position: absolute;
 }
 
 .select-style {
@@ -100,4 +120,45 @@ body{
 }
 .ol-popup-closer:after {
     content: "x";
+}
+
+.camera-images-gallery{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 300px;
+    bottom: 0px;
+    background-color: #00672d;
+}
+
+.camera-images-gallery-header {
+    height: 25px;
+    color: white;
+    background-color: #0d3702;
+    box-shadow: #174126 -1px 9px 20px 0px;
+}
+
+.camera-images-gallery-header-item {
+    top: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+.camera-images-gallery-statistics {
+    position: absolute;
+    height: 275px;
+    left: 0px;
+    width: 400px;
+}
+
+.camera-images-gallery-content {
+    position: absolute;
+    height: 275px;
+    left: 400px;
+    overflow: auto;
+}
+
+.camera-image-item {
+    width: 100px;
+    padding: 10px;
 }

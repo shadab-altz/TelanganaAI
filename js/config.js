@@ -1,4 +1,11 @@
-const getTelanganaBoundaryURL = 'http://35.154.168.101:5000/getTelanganaBoundary';
-const getTelanganaCameraTrapLocationsURL = 'http://35.154.168.101:5000/getTelanganaCameraTrapLocations';
-const getRanges = 'http://35.154.168.101:5000/getRanges';
-const getStateStatisticsURL = 'http://35.154.168.101:3000/getStateStatistics';
+const server = "35.154.168.101";
+//const server = "localhost";
+const port = 5000;
+
+const getTelanganaBoundaryURL = 'http://' + server + ':' + port + '/getTelanganaBoundary';
+const getTelanganaCameraTrapLocationsURL = 'http://' + server + ':' + port + '/getTelanganaCameraTrapLocations';
+const getRanges = 'http://' + server + ':' + port + '/getRanges';
+const getSections = 'http://' + server + ':' + port + '/getSections';
+const getSectionsCameraTrapsURL = 'http://' + server + ':' + port + '/getSectionsCameraTraps';
+const getCameraimagesURL = 'http://' + server + ':' + port + '/getCameraimages';
+const getStateStatisticsURL = 'http://' + server + ':' + port + '/getStateStatistics';

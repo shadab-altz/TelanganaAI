@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
-    <title>Landing Page Map</title>
+    <title>Telangana AI Grand Challenge</title>
     <script class="u-script" type="text/javascript" src="jquery-3.6.0.min.js" defer=""></script>
     <link rel="stylesheet" href="styles.css">
     <script src="map.js"></script>
@@ -29,29 +29,42 @@
             <div id="popup-content"></div>
           </div>
         <div id="leftAdminPanel" class="leftPanelClass">
-            <div style="margin: 20px;">
-                <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();" class="form-select form-select-sm select-style" aria-label="month">
-                    <option value="" selected>Month</option>
-                    <option value="january">January</option>
-                    <option value="february">February</option>
-                </select>
+            <div id="adminNavigationPanel">
+                <div class="panel-heading">
+                    Admin Navigation Panel
+                </div>
+                <div class="panel-component">
+                    <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();" class="form-select form-select-sm select-style" aria-label="month">
+                        <option value="" selected>Month</option>
+                        <option value="january">January</option>
+                        <option value="february">February</option>
+                    </select>
+                </div>
+                <div class="panel-component">
+                    <select name="range" id="range" onchange="getTelanganaSections()" class="form-select form-select-sm select-style" aria-label="range">
+                        <option selected>Range</option>
+                    </select>
+                </div>
+                <div class="panel-component">
+                    <select name="section" id="section" onchange="getSectionsCameraTraps()" class="form-select form-select-sm select-style" aria-label="section">
+                        <option selected>Section</option>
+                      </select>
+                </div>
             </div>
-            <div style="margin: 20px;">
-                <select name="range" id="range" class="form-select form-select-sm select-style" aria-label="range">
-                    <option selected>Range</option>
-                    <!-- <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option> -->
-                </select>
+            <div>
+                <button type="button" class="btn btn-primary btn-sm admin-panel-button" onclick="resetAdminPanel()">Reset</button>
             </div>
-            <div style="margin: 20px;">
-                <select name="section" id="section" class="form-select form-select-sm select-style" aria-label="section">
-                    <option selected>Section</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+        </div>
+
+        <div id="cameraImagesGallery" class="camera-images-gallery">
+            <div id="cameraImagesGalleryHeader" class="camera-images-gallery-header">
+                <label id="cameraImagesGalleryHeaderLabel"></label>
+                <div class="camera-images-gallery-header-item"><img width="15" src="/icons/close.png" /></div>
             </div>
+            <div id="cameraImagesGalleryStatistics" class="camera-images-gallery-statistics">
+                <h3>Species Statistics</h3>
+            </div>
+            <div id="cameraImagesGalleryContent" class="camera-images-gallery-content"></div>
         </div>
     </body>
 </html>
