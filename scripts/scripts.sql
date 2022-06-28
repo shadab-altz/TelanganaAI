@@ -40,12 +40,12 @@ $$;
 ---------- Get Sections
 
 CREATE OR REPLACE FUNCTION sp_getSections(sp_month character varying, sp_range character varying) 
-returns table (sp_sections character varying, sp_rotation integer, sp_geometry text) 
+returns table (sp_sections character varying, sp_camera character varying, sp_rotation integer, sp_geometry text) 
 LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('select DISTINCT(section), rotation, ST_AsGeoJSON(ST_Transform(location, 3857)) FROM %s WHERE range = ''%s'' ', sp_month, sp_range);
+	EXECUTE format('select DISTINCT(section), camera, rotation, ST_AsGeoJSON(ST_Transform(location, 3857)) FROM %s WHERE range = ''%s'' ', sp_month, sp_range);
 END;
 $$;
 

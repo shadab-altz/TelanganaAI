@@ -1,32 +1,35 @@
 {
-    "Production": {
-        "appPort": 5000,
-        "dbConfig": {
-            "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
-            "database": "taim",
-            "user": "postgres",
-            "password": "postgres",
-            "port": 5432
-        }
-      },
-      "Staging": {
-        "appPort": 5000,
-        "dbConfig": {
-            "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
-            "database": "taim",
-            "user": "postgres",
-            "password": "postgres",
-            "port": 5432
-        }
-      },
-      "Development": {
-          "appPort": 5000,
-          "dbConfig": {
-            "host": "localhost",
-            "database": "taim",
-            "user": "postgres",
-            "password": "postgres",
-            "port": 5432
-          }
-        }
+  "Production": {
+    "appPort": 5000,
+    "dbConfig": {
+      "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
+      "database": "taim",
+      "user": "postgres",
+      "password": "postgres",
+      "port": 5432
+    },
+    "fileUploadPath": "/home/ubuntu/aiimageupload/"
+  },
+  "Staging": {
+    "appPort": 5000,
+    "dbConfig": {
+      "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
+      "database": "taim",
+      "user": "postgres",
+      "password": "postgres",
+      "port": 5432
+    },
+    "fileUploadPath": "/home/ubuntu/aiimageupload/"
+  },
+  "Development": {
+    "appPort": 5000,
+    "dbConfig": {
+      "host": "localhost",
+      "database": "taim",
+      "user": "postgres",
+      "password": "postgres",
+      "port": 5432
+    },
+    "fileUploadPath": "C:/work/projects/aiimageupload/"
+  }
 }

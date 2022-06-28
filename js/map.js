@@ -338,12 +338,17 @@ const getCameraimages = (camera) => {
     .then(function(data) {
         
         $("#cameraImagesGallery").show();
-        $("#cameraImagesGalleryHeaderLabel").html(camera);
+        $("#cameraImagesGalleryContent").empty();
+        $("#cameraImagesGalleryHeaderLabel").html(camera + ": " + data.data.length + " images");
+        var imageGallery = '';
         data.data.forEach((item) => {
             console.log(item.sp_filepath);
-            $("#cameraImagesGalleryContent").append("<img id='" + item.sp_filename + "' src='" + item.sp_filepath + "' class='camera-image-item' />")
+            imageGallery += "<span class='camera-image-item-container'>" 
+            + "<img id='" + item.sp_filename + "' src='" + item.sp_filepath + "' class='loading camera-image-item' />" 
+            + "<label class='camera-image-item-label'>" + item.sp_filename + "</label>"
+            + "</span>";
         });
-
+        $("#cameraImagesGalleryContent").html(imageGallery);
     });
 }
 
@@ -369,6 +374,38 @@ const resetAdminPanel = () => {
             }
         }
     });
+}
+
+const uploadTestImage = () => {
+    var imageFileFormData = new FormData($('#imageFileForm')[0]);
+    if($("#imageInput").val() == '')
+        return;
+    $("#uploadImageButton").find(".spinner-border-sm").show();
+    $.ajax({
+        type: 'POST',
+        url : uploadImageFileURL,
+        data: imageFileFormData,
+        dataType: 'json',
+        contentType: false, 
+        processData: false, 
+        success: function(d) {
+            if(d.status == "SUCCESS") {
+                $("#uploadImageButton").find(".spinner-border-sm").hide();
+            }
+        },
+        error: function(e) {
+            $("#uploadImageButton").find(".spinner-border-sm").hide();
+        }
+    });
+}
+
+const clearUploadedImage = () => {
+    $("#imageInput").val('');
+}
+
+const closeGallery = () => {
+    $("#cameraImagesGalleryContent").empty();
+    $("#cameraImagesGallery").hide();
 }
 
 /* const getStateStatistics = (name) => {

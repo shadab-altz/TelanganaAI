@@ -40,6 +40,14 @@ body{
     height: 100%;
 }
 
+.hidden {
+    display: none !important;
+}
+
+.show {
+    display: block;
+}
+
 .leftPanelClass {
     position: absolute;
     top: 70px;
@@ -69,11 +77,31 @@ body{
     position: absolute;
 }
 
+.left-image-upload-panel {
+    position: absolute;
+    top: 300px;
+    left: 10px;
+    width: 300px;
+    height: 150px;
+    background-color: #00672d;
+    border: 1px solid #fff8dc;
+}
+
+.left-image-upload-section {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.left-image-upload-file-input {
+    background-color: black !important;
+    color: white !important;
+}
+
 .select-style {
     background-color: black !important;
     color: aliceblue !important;
 }
-
 
 .ol-popup {
     position: absolute;
@@ -139,9 +167,10 @@ body{
 }
 
 .camera-images-gallery-header-item {
-    top: 0px;
-    right: 0px;
+    top: -2px;
+    right: 5px;
     position: absolute;
+    cursor: pointer;
 }
 
 .camera-images-gallery-statistics {
@@ -156,9 +185,35 @@ body{
     height: 275px;
     left: 400px;
     overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.camera-image-item-container {
+    width: 100px;
+}
+
+.camera-image-item-label {
+    position: relative;
+    color: cornsilk;
+    font-size: 12px;
+    /* left: -90px;
+    top: 35px; */
 }
 
 .camera-image-item {
     width: 100px;
-    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    transition: transform .4s;
+    cursor: pointer;
+}
+
+.camera-image-item:hover {
+    transform: scale(1.3);
+}
+
+.loading {
+    background: transparent url('/icons/loading.svg') center no-repeat;
 }

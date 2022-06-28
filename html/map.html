@@ -56,10 +56,30 @@
             </div>
         </div>
 
+        <div id="leftImageUploadDiv" class="left-image-upload-panel">
+            <div id="leftImageUploadPanel">
+                <div class="panel-heading">
+                    Image Upload
+                </div>
+                <div class="left-image-upload-section">
+                    <form id="imageFileForm" class="input-group-sm" enctype="multipart/form-data" method="POST">
+                        <input class="form-control panel-components left-image-upload-file-input" type="file" id="imageInput" name="imageInput">
+                    </form>
+                    <button id="uploadImageButton" type="button" class="btn btn-primary mt-3 btn-sm" onclick="uploadTestImage()">
+                        <span class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
+                        <span class="sr-only"></span>Upload
+                    </button>
+                    <button type="button" class="btn btn-primary mt-3 btn-sm" onclick="clearUploadedImage()">Clear</button>
+                </div>
+            </div>
+        </div>
+
         <div id="cameraImagesGallery" class="camera-images-gallery">
             <div id="cameraImagesGalleryHeader" class="camera-images-gallery-header">
                 <label id="cameraImagesGalleryHeaderLabel"></label>
-                <div class="camera-images-gallery-header-item"><img width="15" src="/icons/close.png" /></div>
+                <div class="camera-images-gallery-header-item" title="Close" onclick="closeGallery()">
+                    <img width="15" src="/icons/close.png" />
+                </div>
             </div>
             <div id="cameraImagesGalleryStatistics" class="camera-images-gallery-statistics">
                 <h3>Species Statistics</h3>

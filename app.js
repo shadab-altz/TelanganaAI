@@ -2,6 +2,7 @@ const express = require('express')
 const fs = require('fs')
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const path = require('path');
 const db = require('./server-js/db')
 const ab = require('./server-js/admin-boundaries')
@@ -29,6 +30,8 @@ app.use(
   })
 )
 
+app.use(fileUpload());
+app.use(require('body-parser').json())
 app.use(express.static(path.join(__dirname, '/css')))
 app.use(express.static(path.join(__dirname, '/js')))
 app.use(express.static(path.join(__dirname, '/img')))
@@ -59,6 +62,10 @@ app.post('/getCameraimages', function(request, response) {
 
 app.post('/getTelanganaCameraTrapLocations', function(request, response) {
     db.getTelanganaCameraTrapLocations(request, response)
+});
+
+app.post('/uploadImageFile', function(request, response) {
+    db.uploadImageFile(request, response)
 });
 
 app.listen(port, () => {

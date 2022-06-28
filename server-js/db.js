@@ -1,6 +1,7 @@
 const config = require('config');
 const Pool = require('pg').Pool
 const fs = require('fs');
+const uuid = require('uuid');
 const { request } = require('http');
 
 var appMode;
@@ -14,6 +15,7 @@ else
     appMode = "Development";
 
 const dbConfig = config.get(appMode + '.dbConfig');
+const fileUploadPath = config.get(appMode + '.fileUploadPath')
 
 const pool = new Pool(dbConfig)
 
@@ -112,11 +114,28 @@ const getTelanganaCameraTrapLocations = (request, response) => {
     });
 }
 
+const uploadImageFile = (request, response) => {
+    if (request.files != null) {
+        let imageInput = request.files.imageInput;
+        var imageUUID = uuid.v4();
+        var _name = imageUUID +"_" + imageInput.name.replaceAllTxt(" ", "_");
+        var _fileUploadPath = fileUploadPath + _name;
+        imageInput.mv(_fileUploadPath, function(err) {
+            if (err)
+                return response.status(500).send(err);
+            response.status(200).send({status: 'SUCCESS', uploadPath: _fileUploadPath});
+        });
+    }
+}
+
 module.exports ={
     getTelanganaBoundary,
     getRanges,
     getSections,
     getSectionsCameraTraps,
     getTelanganaCameraTrapLocations,
-    getCameraimages
+    getCameraimages,
+    uploadImageFile
 }
+
+String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }
