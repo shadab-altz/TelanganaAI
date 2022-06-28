@@ -77,6 +77,19 @@ BEGIN
 END;
 $$;
 
+
+---------- Get Camera Images Statistics
+
+CREATE OR REPLACE FUNCTION sp_getCameraStatistics(sp_camera character varying) 
+returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM january WHERE camera = ''%s'' GROUP BY species, common_name', sp_camera);
+END;
+$$;
+
 --------- UPDATE the Rotation Column
 
 

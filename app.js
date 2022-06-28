@@ -60,6 +60,10 @@ app.post('/getCameraimages', function(request, response) {
     db.getCameraimages(request, response)
 });
 
+app.post('/getCameraStatistics', function(request, response) {
+    db.getCameraStatistics(request, response)
+});
+
 app.post('/getTelanganaCameraTrapLocations', function(request, response) {
     db.getTelanganaCameraTrapLocations(request, response)
 });

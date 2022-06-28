@@ -98,6 +98,22 @@ const getCameraimages = (request, response) => {
     });
 }
 
+const getCameraStatistics = (request, response) => {
+    const { camera } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getCameraStatistics($1)", [camera])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getTelanganaCameraTrapLocations = (request, response) => {
     const { month } = request.body
     pool.connect()
@@ -135,6 +151,7 @@ module.exports ={
     getSectionsCameraTraps,
     getTelanganaCameraTrapLocations,
     getCameraimages,
+    getCameraStatistics,
     uploadImageFile
 }
 

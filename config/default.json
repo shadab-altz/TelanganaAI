@@ -1,6 +1,6 @@
 {
   "Production": {
-    "appPort": 5000,
+    "appPort": 8080,
     "dbConfig": {
       "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
       "database": "taim",
@@ -11,7 +11,7 @@
     "fileUploadPath": "/home/ubuntu/aiimageupload/"
   },
   "Staging": {
-    "appPort": 5000,
+    "appPort": 8080,
     "dbConfig": {
       "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
       "database": "taim",

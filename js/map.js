@@ -1,7 +1,8 @@
 var geojsonObject = '';
 var cameraGeojsonObject = '';
 var telanganaStateExtents = null;
-
+var cameraSpeciesStatistics = [];
+var cameraSpeciesStatisticsData = null;
 
 const initMap = () => {
     var attribution = new ol.control.Attribution({
@@ -49,6 +50,7 @@ const initMap = () => {
         })
     });
     getTelanganaBoundary();
+    initializeStatisticsCheckBox();
 }
 
 const getTelanganaBoundary = () => {
@@ -202,6 +204,7 @@ const cameraTrapLocationPlotter = (data) => {
         });
         if (feature) {
             getCameraimages(feature.get('camera'));
+            getCameraStatistics(feature.get('camera'));
             var geometry = feature.getGeometry();
             var coord = geometry.getCoordinates();
             //if(feature.get('name') == undefined)
@@ -350,6 +353,73 @@ const getCameraimages = (camera) => {
         });
         $("#cameraImagesGalleryContent").html(imageGallery);
     });
+}
+
+const initializeStatisticsCheckBox = () => {
+    $('#showScientificNames').change(function() {
+        drawPieChart(cameraSpeciesStatisticsData, this.checked);
+    });
+}
+
+const getCameraStatistics = (camera) => {
+    if(camera == undefined)
+        return;
+    fetch(getCameraStatisticsURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            camera: camera
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        cameraSpeciesStatisticsData = data;
+        drawPieChart(data, false);
+    });
+}
+
+const drawPieChart = (data, useSpeciesNames) => {
+    cameraSpeciesStatistics = [];
+    data.data.forEach(function (item) {
+        var _name;
+        if(useSpeciesNames)
+            _name = item.sp_species
+        else
+            _name = item.sp_common_name
+        var t = {
+            type: _name,
+            value: parseInt(item.sp_count)
+        }
+        cameraSpeciesStatistics.push(t);
+        var data = crossfilter(cameraSpeciesStatistics);
+        var valueDimension = data.dimension(function (d) {
+            return d.type;
+        });
+        var valueGroup = valueDimension.group().reduceSum(function (d) { return +d.value; });
+
+        var pieChartValue = dc.pieChart("#statisticsPieChart")
+            .width(450)
+            .cx(120)
+            .height(200)
+            .radius(100)
+            .innerRadius(0)
+            .drawPaths(true)
+            .dimension(valueDimension)
+            .legend(dc.legend().x(250).y(10).gap(5).horizontal(false).autoItemWidth(true).legendWidth(300).legendText(function (d) {
+                return d.name + "(" + d.data + ")"
+            }))
+            .renderLabel(true)
+            .group(valueGroup)
+            .title(function (p) {
+                return p.key + "\n"
+                        + p.value
+            });
+        dc.renderAll();
+    });
+    console.log(cameraSpeciesStatistics);
 }
 
 const resetAdminPanel = () => {

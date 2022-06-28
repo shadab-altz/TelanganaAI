@@ -173,17 +173,21 @@ body{
     cursor: pointer;
 }
 
+.camera-statistics-header {
+    color: #d1cd93;
+}
+
 .camera-images-gallery-statistics {
     position: absolute;
     height: 275px;
     left: 0px;
-    width: 400px;
+    width: 500px;
 }
 
 .camera-images-gallery-content {
     position: absolute;
     height: 275px;
-    left: 400px;
+    left: 500px;
     overflow: auto;
     display: flex;
     flex-wrap: wrap;
