@@ -1,5 +1,7 @@
+var indiaGeojsonObject = '';
 var geojsonObject = '';
 var cameraGeojsonObject = '';
+var IndiaExtents = null;
 var telanganaStateExtents = null;
 var cameraSpeciesStatistics = [];
 var cameraSpeciesStatisticsData = null;
@@ -13,13 +15,6 @@ const initMap = () => {
         maxZoom: 18,
         zoom: 4.5,
     });
-    const cartoDBdarkAll = new ol.layer.Tile({
-        source: new ol.source.OSM({
-            url: "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
-        }),
-        visible: false,
-        title: 'cartoDBdarkAll'
-    });
     map = new ol.Map({
         controls: [],
         interactions: ol.interaction.defaults({
@@ -32,14 +27,7 @@ const initMap = () => {
             pointer: true,
             select: true
         }),
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM({
-                url: "http://{1-4}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-            }),
-            title: 'cartoDBdarkAll'
-            })
-        ],
+        layers: [],
         target: 'map',
         view: mapview
     });
@@ -49,8 +37,69 @@ const initMap = () => {
             //getStateStatistics(feature.get('name'));
         })
     });
+    getIndiaBasemap();
     getTelanganaBoundary();
     initializeStatisticsCheckBox();
+}
+
+const getIndiaBasemap = () => {
+    fetch(getIndiaBasemapURL,
+    {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        indiaGeojsonObject = {
+            'type': 'FeatureCollection',
+            'crs': {
+            'type': 'name',
+            'properties': {
+                'name': 'EPSG:3857',
+            },
+            },
+            'features': []
+        }
+        data.data.forEach((item) => {
+            var geometry = JSON.parse(item.sp_geometry);
+            var name = item.sp_state_name;
+            console.log("Style: " + geometry.type);
+            indiaGeojsonObject.features.push({
+                'type': 'Feature',
+                'geometry': geometry,
+                'properties': {name}
+            });
+
+            const vectorSource = new ol.source.Vector({
+                features: new ol.format.GeoJSON().readFeatures(indiaGeojsonObject)
+            }); 
+        
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                name: 'IndiaBoundary',
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 1,
+                    }),
+                    fill: new ol.style.Fill({
+                    //color: 'rgba(3, 145, 255, 0.7)',
+                    color: 'rgb(253, 222, 163, 0.7)'
+                    }),
+                })
+            });
+            map.getLayers().forEach(function (layer) {
+                if(layer.get('name') == "IndiaBoundary") {
+                    map.removeLayer(layer);
+                }
+            });
+            map.addLayer(vectorLayer);
+            IndiaExtents = vectorSource.getExtent();
+            //map.getView().fit(IndiaExtents);
+        })                
+    })
 }
 
 const getTelanganaBoundary = () => {
@@ -96,7 +145,8 @@ const getTelanganaBoundary = () => {
                         width: 1,
                     }),
                     fill: new ol.style.Fill({
-                    color: 'rgba(3, 145, 255, 0.7)',
+                    //color: 'rgba(3, 145, 255, 0.7)',
+                    color: 'rgb(200, 0, 0, 1)'
                     }),
                 })
             });
@@ -130,6 +180,49 @@ const getCameraTrapLocations = () => {
     .then(function(data) {
         cameraTrapLocationPlotter(data);
     })
+}
+
+const getMonthlySightingStatistics = () => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    fetch(getMonthlySightingStatisticsURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var totalSightings = 0;
+        data.data.forEach((item)=> {
+            totalSightings += parseInt(item.sp_count);
+        })
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Human Disturbance')[0].sp_count);
+        var falseTriggers = parseInt(data.data.filter((x) => x.sp_species == 'False Triggers')[0].sp_count);
+        humanInterferencePercentage = (humanSightings/totalSightings) * 100;
+        falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
+
+        $("#rightDashboardTotalSightingsDiv").show();
+        $("#rightDashboardTotalSightingsDiv").empty();
+        $("#rightDashboardTotalSightingsDiv").append("<h5 class='totalsightings-label'>Total sightings</h5>");
+        $("#rightDashboardTotalSightingsDiv").append("<h1 class='totalsightings-count'>" + totalSightings + "</h1>");
+
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").show();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").empty();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
+
+        $("#rightDashboardFalseTriggersPercentageDiv").show();
+        $("#rightDashboardFalseTriggersPercentageDiv").empty();
+        $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
+        $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
+
+    });
 }
 
 const cameraTrapLocationPlotter = (data) => {
@@ -478,6 +571,52 @@ const closeGallery = () => {
     $("#cameraImagesGallery").hide();
 }
 
+
+const showHeatMap = () => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    var species = 'Axis axis';
+    fetch(getSpeciesHeatmapURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month,
+            species: species
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        console.log(data);
+        var featuresArray = [];
+        data.data.forEach((item) => {
+            var geom = JSON.parse(item.sp_location);
+            const feature = new ol.Feature({
+                geometry: new ol.geom.Point([geom.coordinates[0], geom.coordinates[1]])
+                //count: parseInt(item.sp_count)
+            });
+            featuresArray.push(feature);
+        });
+
+        const vectorSource = new ol.source.Vector({
+            features: [],
+        });
+        vectorSource.addFeatures(featuresArray);
+        const vector = new ol.layer.Heatmap({
+            source: vectorSource,
+            blur: parseInt(15, 10),
+            radius: parseInt(5, 10),
+            weight: function (feature) {
+              const name = feature.get('count');
+              return name;
+            },
+          });
+          map.addLayer(vector);
+    });
+}
 /* const getStateStatistics = (name) => {
             var data = {
                 name

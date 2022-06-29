@@ -90,6 +90,53 @@ BEGIN
 END;
 $$;
 
+
+--------- Get monthly statistics
+
+
+CREATE OR REPLACE FUNCTION sp_getMonthlySpeciesSighting(sp_month character varying) 
+returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM %s GROUP BY species, common_name', sp_month);
+END;
+$$;
+
+
+--------- Get the species coordinates
+
+
+CREATE OR REPLACE FUNCTION sp_getSpeciesHeatmap(sp_month character varying, sp_species character varying) 
+returns table (sp_location text, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT ST_AsGeoJSON(location) as "location", COUNT("location") FROM %s WHERE species = ''%s'' GROUP BY location ORDER BY "location" ', sp_month, sp_species);
+END;
+$$;
+
+
+--------- Get India Basemap
+
+
+CREATE OR REPLACE FUNCTION public.sp_getindiabasemap()
+    RETURNS TABLE(sp_state_name character varying, sp_geometry text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+  return query
+  SELECT state_name, ST_AsGeoJSON(ST_Transform(geom, 3857)) FROM india_states;
+END;
+$BODY$;
+
+
 --------- UPDATE the Rotation Column
 
 

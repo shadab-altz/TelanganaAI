@@ -38,6 +38,7 @@ body{
     left: 0px;
     width: 100%;
     height: 100%;
+    background: #1f1f1f;
 }
 
 .hidden {
@@ -96,6 +97,52 @@ body{
 .left-image-upload-file-input {
     background-color: black !important;
     color: white !important;
+}
+
+.right-dashboard-totalsightings-panel {
+    display: none;
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    width: 300px;
+    height: 100px;
+    background-color: #1f1f1f;
+    border: 1px solid #54a49a;
+    opacity: 0.7;
+}
+
+.right-dashboard-humaninterferencepercentage-panel {
+    display: none;
+    position: absolute;
+    top: 180px;
+    right: 10px;
+    width: 300px;
+    height: 100px;
+    background-color: #1f1f1f;
+    border: 1px solid #54a49a;
+    opacity: 0.7;
+}
+
+.right-dashboard-falsetriggerspercentage-panel {
+    display: none;
+    position: absolute;
+    top: 290px;
+    right: 10px;
+    width: 300px;
+    height: 100px;
+    background-color: #1f1f1f;
+    border: 1px solid #54a49a;
+    opacity: 0.7;
+}
+
+.totalsightings-label {
+    text-align: center;
+    color: #40c0c0;
+}
+
+.totalsightings-count {
+    text-align: center;
+    color: #FFFFFF;
 }
 
 .select-style {

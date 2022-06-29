@@ -8,7 +8,10 @@
       "password": "postgres",
       "port": 5432
     },
-    "fileUploadPath": "/home/ubuntu/aiimageupload/"
+    "fileUploadPath": "/home/ubuntu/aiimageupload/",
+    "s3bucket": "taim-demo/aiimageupload",
+    "accessKeyId": "AKIAY7YGPPFYOVKPA3HO",
+    "secretAccessKey": "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"
   },
   "Staging": {
     "appPort": 8080,
@@ -19,7 +22,10 @@
       "password": "postgres",
       "port": 5432
     },
-    "fileUploadPath": "/home/ubuntu/aiimageupload/"
+    "fileUploadPath": "/home/ubuntu/aiimageupload/",
+    "s3bucket": "taim-demo/aiimageupload",
+    "accessKeyId": "AKIAY7YGPPFYOVKPA3HO",
+    "secretAccessKey": "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"
   },
   "Development": {
     "appPort": 5000,
@@ -30,6 +36,9 @@
       "password": "postgres",
       "port": 5432
     },
-    "fileUploadPath": "C:/work/projects/aiimageupload/"
+    "fileUploadPath": "C:/work/projects/aiimageupload/",
+    "s3bucket": "taim-demo/aiimageupload",
+    "accessKeyId": "AKIAY7YGPPFYOVKPA3HO",
+    "secretAccessKey": "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"
   }
 }

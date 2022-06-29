@@ -40,6 +40,10 @@ app.get('/map', function(req, res) {
     res.sendFile(path.join(__dirname, '/html/map.html'));
 });
 
+app.get('/getIndiaBasemap', (request, response) => {
+    db.getIndiaBasemap(request, response)
+})
+
 app.get('/getTelanganaBoundary', (request, response) => {
     db.getTelanganaBoundary(request, response)
 })
@@ -64,12 +68,20 @@ app.post('/getCameraStatistics', function(request, response) {
     db.getCameraStatistics(request, response)
 });
 
+app.post('/getMonthlySightingStatistics', function(request, response) {
+    db.getMonthlySightingStatistics(request, response)
+});
+
 app.post('/getTelanganaCameraTrapLocations', function(request, response) {
     db.getTelanganaCameraTrapLocations(request, response)
 });
 
 app.post('/uploadImageFile', function(request, response) {
     db.uploadImageFile(request, response)
+});
+
+app.post('/getSpeciesHeatmap', function(request, response) {
+    db.getSpeciesHeatmap(request, response)
 });
 
 app.listen(port, () => {

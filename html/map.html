@@ -37,7 +37,7 @@
                     Admin Navigation Panel
                 </div>
                 <div class="panel-component">
-                    <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();" class="form-select form-select-sm select-style" aria-label="month">
+                    <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();getMonthlySightingStatistics();" class="form-select form-select-sm select-style" aria-label="month">
                         <option value="" selected>Month</option>
                         <option value="january">January</option>
                         <option value="february">February</option>
@@ -73,9 +73,14 @@
                         <span class="sr-only"></span>Upload
                     </button>
                     <button type="button" class="btn btn-primary mt-3 btn-sm" onclick="clearUploadedImage()">Clear</button>
+                    <button type="button" class="btn btn-primary mt-3 btn-sm" onclick="showHeatMap()">Species Heatmap</button>
                 </div>
             </div>
         </div>
+
+        <div id="rightDashboardTotalSightingsDiv" class="right-dashboard-totalsightings-panel"></div>
+        <div id="rightDashboardTotalHumanInterferencePercentageDiv" class="right-dashboard-humaninterferencepercentage-panel"></div>
+        <div id="rightDashboardFalseTriggersPercentageDiv" class="right-dashboard-falsetriggerspercentage-panel"></div>
 
         <div id="cameraImagesGallery" class="camera-images-gallery">
             <div id="cameraImagesGalleryHeader" class="camera-images-gallery-header">

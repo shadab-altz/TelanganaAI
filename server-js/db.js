@@ -3,6 +3,7 @@ const Pool = require('pg').Pool
 const fs = require('fs');
 const uuid = require('uuid');
 const { request } = require('http');
+const AWS = require('aws-sdk');
 
 var appMode;
 if(process.argv[2] == "dev")
@@ -16,6 +17,9 @@ else
 
 const dbConfig = config.get(appMode + '.dbConfig');
 const fileUploadPath = config.get(appMode + '.fileUploadPath')
+const accessKeyId = config.get(appMode + '.accessKeyId')
+const secretAccessKey = config.get(appMode + '.secretAccessKey')
+const s3bucket = config.get(appMode + '.s3bucket')
 
 const pool = new Pool(dbConfig)
 
@@ -23,6 +27,21 @@ const getTelanganaBoundary = (request, response) => {
     pool.connect()
     .then(client => {
         return client.query("SELECT * FROM sp_getTelanganaBoundary()")
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
+const getIndiaBasemap = (request, response) => {
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getindiabasemap()")
             .then(res => {
                 client.release();
                 response.status(200).send({data: res.rows})
@@ -114,6 +133,22 @@ const getCameraStatistics = (request, response) => {
     });
 }
 
+const getMonthlySightingStatistics = (request, response) => {
+    const { month } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getMonthlySpeciesSighting($1)", [month])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getTelanganaCameraTrapLocations = (request, response) => {
     const { month } = request.body
     pool.connect()
@@ -130,7 +165,29 @@ const getTelanganaCameraTrapLocations = (request, response) => {
     });
 }
 
+const getSpeciesHeatmap = (request, response) => {
+    const { month, species } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getSpeciesHeatmap($1, $2)", [month, species])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const uploadImageFile = (request, response) => {
+
+    const s3 = new AWS.S3({
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
+    });
+
     if (request.files != null) {
         let imageInput = request.files.imageInput;
         var imageUUID = uuid.v4();
@@ -139,19 +196,39 @@ const uploadImageFile = (request, response) => {
         imageInput.mv(_fileUploadPath, function(err) {
             if (err)
                 return response.status(500).send(err);
-            response.status(200).send({status: 'SUCCESS', uploadPath: _fileUploadPath});
+
+            fs.readFile(_fileUploadPath, (err, data) => {
+                if (err) throw err;
+                const params = {
+                    Bucket: s3bucket,
+                    Key: _name,
+                    Body: data
+                };
+                s3.upload(params, function(s3Err, data) {
+                    if (s3Err) throw s3Err
+                    console.log(`File uploaded successfully at ${data.Location}`)
+                    fs.unlink(_fileUploadPath, function(err){
+                        if(err) return console.log(err);
+                        console.log('file deleted successfully');
+                   });
+                    response.status(200).send({status: 'SUCCESS', uploadPath: data.Location});
+                });
+            });
         });
     }
 }
 
 module.exports ={
+    getIndiaBasemap,
     getTelanganaBoundary,
     getRanges,
     getSections,
     getSectionsCameraTraps,
+    getMonthlySightingStatistics,
     getTelanganaCameraTrapLocations,
     getCameraimages,
     getCameraStatistics,
+    getSpeciesHeatmap,
     uploadImageFile
 }
 
