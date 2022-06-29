@@ -210,12 +210,43 @@ const uploadImageFile = (request, response) => {
                     fs.unlink(_fileUploadPath, function(err){
                         if(err) return console.log(err);
                         console.log('file deleted successfully');
-                   });
-                    response.status(200).send({status: 'SUCCESS', uploadPath: data.Location});
+                    });
+                    pool.connect()
+                    .then(client => {
+                        return client.query("SELECT * FROM sp_addimagefordetection($1)", [data.Location])
+                            .then(res => {
+                                client.release();
+                                response.status(200).send({
+                                    status: 'SUCCESS',
+                                    uploadPath: data.Location,
+                                    id: res.rows[0].sp_addimagefordetection
+                                })
+                            })
+                            .catch(e => {
+                                client.release();
+                                console.log(e)
+                            })
+                    });
                 });
             });
         });
     }
+}
+
+const polling = (request, response) => {
+    const { pollid } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getidentification($1)", [pollid])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
 }
 
 module.exports ={
@@ -229,7 +260,8 @@ module.exports ={
     getCameraimages,
     getCameraStatistics,
     getSpeciesHeatmap,
-    uploadImageFile
+    uploadImageFile,
+    polling
 }
 
 String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }

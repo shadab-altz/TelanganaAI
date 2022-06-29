@@ -73,11 +73,35 @@
                         <span class="sr-only"></span>Upload
                     </button>
                     <button type="button" class="btn btn-primary mt-3 btn-sm" onclick="clearUploadedImage()">Clear</button>
-                    <button type="button" class="btn btn-primary mt-3 btn-sm" onclick="showHeatMap()">Species Heatmap</button>
+                    <button type="button" style="display: none;" class="btn btn-primary mt-3 btn-sm" onclick="showHeatMap()">Species Heatmap</button>
+                    <label id="uploadStatusLabel" style="color: #FFFFFF;"></label>
                 </div>
             </div>
         </div>
 
+        <div class="modal" id="identifiedImageModal" tabindex="-1" aria-labelledby="identifiedImageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="identifiedImageModalLabel">Identified Image</h5>
+                        <button type="button" id="modalCloseButtonTop" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="identifiedImageDiv" class="display-image-modal"></div>
+                        <div>
+                            <label id="detectedSpeciesLabel"></label>
+                            <label id="detectedSpeciesCountLabel"></label>
+                            <label id="detectedAccuracyLabel"></label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" id="modalCloseButtonBottom" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
         <div id="rightDashboardTotalSightingsDiv" class="right-dashboard-totalsightings-panel"></div>
         <div id="rightDashboardTotalHumanInterferencePercentageDiv" class="right-dashboard-humaninterferencepercentage-panel"></div>
         <div id="rightDashboardFalseTriggersPercentageDiv" class="right-dashboard-falsetriggerspercentage-panel"></div>
@@ -91,7 +115,7 @@
             </div>
             <div id="cameraImagesGalleryStatistics" class="camera-images-gallery-statistics">
                 <h3 class="camera-statistics-header">Species Statistics</h3>
-                <div class="form-check">
+                <div class="form-check camera-statistics-checkbox">
                     <input class="form-check-input" type="checkbox" value="" id="showScientificNames">
                     <label class="form-check-label" for="showScientificNames">
                       Show Scientific Names

@@ -40,6 +40,7 @@ const initMap = () => {
     getIndiaBasemap();
     getTelanganaBoundary();
     initializeStatisticsCheckBox();
+    imageModalActionsCorrection();
 }
 
 const getIndiaBasemap = () => {
@@ -203,7 +204,10 @@ const getMonthlySightingStatistics = () => {
             totalSightings += parseInt(item.sp_count);
         })
         var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Human Disturbance')[0].sp_count);
-        var falseTriggers = parseInt(data.data.filter((x) => x.sp_species == 'False Triggers')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'False Triggers');
+        var falseTriggers;
+        if(falseTriggerFilter.length)
+            falseTriggers = parseInt([0].sp_count);
         humanInterferencePercentage = (humanSightings/totalSightings) * 100;
         falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
 
@@ -217,11 +221,12 @@ const getMonthlySightingStatistics = () => {
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
 
-        $("#rightDashboardFalseTriggersPercentageDiv").show();
-        $("#rightDashboardFalseTriggersPercentageDiv").empty();
-        $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
-        $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
-
+        if(falseTriggerFilter.length) {
+            $("#rightDashboardFalseTriggersPercentageDiv").show();
+            $("#rightDashboardFalseTriggersPercentageDiv").empty();
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
+        }
     });
 }
 
@@ -296,6 +301,9 @@ const cameraTrapLocationPlotter = (data) => {
             return feature;
         });
         if (feature) {
+            var cameraValue = feature.get('camera');
+            if(cameraValue == undefined)
+                return;
             getCameraimages(feature.get('camera'));
             getCameraStatistics(feature.get('camera'));
             var geometry = feature.getGeometry();
@@ -539,11 +547,14 @@ const resetAdminPanel = () => {
     });
 }
 
+var imageIdentified = false;
+var pollid = '';
 const uploadTestImage = () => {
     var imageFileFormData = new FormData($('#imageFileForm')[0]);
     if($("#imageInput").val() == '')
         return;
     $("#uploadImageButton").find(".spinner-border-sm").show();
+    $("#uploadStatusLabel").html("Uploading, please wait...");
     $.ajax({
         type: 'POST',
         url : uploadImageFileURL,
@@ -553,7 +564,11 @@ const uploadTestImage = () => {
         processData: false, 
         success: function(d) {
             if(d.status == "SUCCESS") {
+                console.log("For polling: " + d.id);
+                pollid = d.id;
+                $("#uploadStatusLabel").html("Identifying, please wait...");
                 $("#uploadImageButton").find(".spinner-border-sm").hide();
+                polling();
             }
         },
         error: function(e) {
@@ -561,6 +576,42 @@ const uploadTestImage = () => {
         }
     });
 }
+
+
+const polling = () => {
+    console.log("Fetching for: " + pollid);
+    fetch(pollingURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            pollid: pollid
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if(data.data[0].sp_ouput_image != undefined) {
+            console.log("Identified image: " + data.data[0].sp_ouput_image);
+            $("#uploadStatusLabel").empty();
+            $("#uploadImageButton").find(".spinner-border-sm").hide();
+
+            $("#identifiedImageModal").show();
+            $("#identifiedImageDiv").empty();
+            $("#identifiedImageDiv").append("<img src='" + data.data[0].sp_ouput_image + "' class='display-image-container'/>")
+            $("#detectedSpeciesLabel").text("Species: " + data.data[0].sp_species + ", ");
+            $("#detectedSpeciesCountLabel").text("Number: " + data.data[0].sp_count + ", ");
+            $("#detectedAccuracyLabel").text("Accuracy: " + data.data[0].sp_accuracy + "%, ");
+        }
+        else{
+            setTimeout(() => {
+                polling();
+            }, 5000);
+        }
+    });
+}
+
 
 const clearUploadedImage = () => {
     $("#imageInput").val('');
@@ -617,6 +668,19 @@ const showHeatMap = () => {
           map.addLayer(vector);
     });
 }
+
+
+const imageModalActionsCorrection = () => {
+    $("#modalCloseButtonTop").on("click", function (e) {
+        e.preventDefault();
+        $("#identifiedImageModal").hide();
+    });
+    $("#modalCloseButtonBottom").on("click", function (e) {
+        e.preventDefault();
+        $("#identifiedImageModal").hide();
+    });
+}
+
 /* const getStateStatistics = (name) => {
             var data = {
                 name

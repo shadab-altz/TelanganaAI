@@ -137,6 +137,26 @@ END;
 $BODY$;
 
 
+--------- Add image for dynamic detection
+
+
+CREATE OR REPLACE FUNCTION public.sp_addimagefordetection(sp_input_image character varying)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	_id uuid;
+BEGIN
+	_id := uuid_generate_v4();
+	INSERT INTO dynamic_detection(id, input_image, "timestamp", detected)
+	VALUES (_id, sp_input_image, CURRENT_TIMESTAMP, false);
+	RETURN _id::text;		
+END;
+$BODY$;
+
+
 --------- UPDATE the Rotation Column
 
 

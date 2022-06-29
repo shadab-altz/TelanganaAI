@@ -80,6 +80,10 @@ app.post('/uploadImageFile', function(request, response) {
     db.uploadImageFile(request, response)
 });
 
+app.post('/polling', function(request, response) {
+    db.polling(request, response)
+});
+
 app.post('/getSpeciesHeatmap', function(request, response) {
     db.getSpeciesHeatmap(request, response)
 });
