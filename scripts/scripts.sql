@@ -68,12 +68,12 @@ $$;
 
 
 CREATE OR REPLACE FUNCTION sp_getCameraimages(sp_camera character varying) 
-returns table (sp_filename character varying, sp_village character varying, sp_fromdate text, sp_todate text, sp_filepath character varying) 
+returns table (sp_filename character varying, sp_village character varying, sp_latitude double precision, sp_longitude double precision, sp_fromdate text, sp_todate text, sp_filepath character varying) 
 LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT filename, village, from_date::text, to_date::text, filepath FROM january WHERE camera = ''%s'' ', sp_camera);
+	EXECUTE format('SELECT filename, village, latitude, longitude, from_date::text, to_date::text, filepath FROM january WHERE camera = ''%s'' ', sp_camera);
 END;
 $$;
 

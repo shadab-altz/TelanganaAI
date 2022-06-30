@@ -38,7 +38,7 @@ const initMap = () => {
         })
     });
     getIndiaBasemap();
-    getTelanganaBoundary();
+    //getTelanganaBoundary();
     initializeStatisticsCheckBox();
     imageModalActionsCorrection();
 }
@@ -99,7 +99,8 @@ const getIndiaBasemap = () => {
             map.addLayer(vectorLayer);
             IndiaExtents = vectorSource.getExtent();
             //map.getView().fit(IndiaExtents);
-        })                
+        })
+        getTelanganaBoundary();
     })
 }
 
@@ -147,7 +148,7 @@ const getTelanganaBoundary = () => {
                     }),
                     fill: new ol.style.Fill({
                     //color: 'rgba(3, 145, 255, 0.7)',
-                    color: 'rgb(200, 0, 0, 1)'
+                    color: 'rgb(150, 0, 0, 1)'
                     }),
                 })
             });
@@ -443,7 +444,9 @@ const getCameraimages = (camera) => {
         
         $("#cameraImagesGallery").show();
         $("#cameraImagesGalleryContent").empty();
-        $("#cameraImagesGalleryHeaderLabel").html(camera + ": " + data.data.length + " images");
+        var latitude = data.data[0].sp_latitude;
+        var longitude = data.data[0].sp_longitude;
+        $("#cameraImagesGalleryHeaderLabel").html("<label style='color: #ffe961;'>Camera id: " + camera + ": " + data.data.length + " images" + ",</label> <label style='color: #00ffff;'> Longitude: " + longitude + ", Latitude: " + latitude + "</label>");
         var imageGallery = '';
         data.data.forEach((item) => {
             console.log(item.sp_filepath);

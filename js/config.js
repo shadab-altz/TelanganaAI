@@ -1,7 +1,7 @@
-const server = "13.126.211.244";
-//const server = "localhost";
-const port = 8080;
-//const port = 5000;
+//const server = "13.126.211.244";
+const server = "localhost";
+//const port = 8080;
+const port = 5000;
 
 const getIndiaBasemapURL = 'http://' + server + ':' + port + '/getIndiaBasemap';
 const getTelanganaBoundaryURL = 'http://' + server + ':' + port + '/getTelanganaBoundary';
