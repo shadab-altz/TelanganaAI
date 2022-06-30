@@ -302,26 +302,26 @@ const cameraTrapLocationPlotter = (data) => {
         });
         if (feature) {
             var cameraValue = feature.get('camera');
-            if(cameraValue == undefined)
-                return;
-            getCameraimages(feature.get('camera'));
-            getCameraStatistics(feature.get('camera'));
-            var geometry = feature.getGeometry();
-            var coord = geometry.getCoordinates();
-            //if(feature.get('name') == undefined)
-                //return;
-            
-            $(".ol-popup").show();
-            var imageTag = '';
-            //if(feature.get('image') != undefined)
-                //imageTag = '<img width=60 src=' + feature.get('image') + '></br>';
-            var content = imageTag;
-            content += '<label><b>' + feature.get('camera') + '</b></label></br>';
-            //content += '<label>' + feature.get('kingdom') + '</label></br>';
-            //content += '<label>' + feature.get('family') + '</label></br>';
-            content_element.innerHTML = content;
-            overlay.setPosition(coord);
-            //popupFanOverlay.setPosition(coord);
+            if(cameraValue != undefined) {
+                getCameraimages(feature.get('camera'));
+                getCameraStatistics(feature.get('camera'));
+                var geometry = feature.getGeometry();
+                var coord = geometry.getCoordinates();
+                //if(feature.get('name') == undefined)
+                    //return;
+                
+                $(".ol-popup").show();
+                var imageTag = '';
+                //if(feature.get('image') != undefined)
+                    //imageTag = '<img width=60 src=' + feature.get('image') + '></br>';
+                var content = imageTag;
+                content += '<label><b>' + feature.get('camera') + '</b></label></br>';
+                //content += '<label>' + feature.get('kingdom') + '</label></br>';
+                //content += '<label>' + feature.get('family') + '</label></br>';
+                content_element.innerHTML = content;
+                overlay.setPosition(coord);
+                //popupFanOverlay.setPosition(coord);
+            }
         }
     });
 
@@ -448,12 +448,19 @@ const getCameraimages = (camera) => {
         data.data.forEach((item) => {
             console.log(item.sp_filepath);
             imageGallery += "<span class='camera-image-item-container'>" 
-            + "<img id='" + item.sp_filename + "' src='" + item.sp_filepath + "' class='loading camera-image-item' />" 
+            + "<img id='" + item.sp_filename + "' src='" + item.sp_filepath + "' onclick='showImage(this.id, this.src)' class='loading camera-image-item' />" 
             + "<label class='camera-image-item-label'>" + item.sp_filename + "</label>"
             + "</span>";
         });
         $("#cameraImagesGalleryContent").html(imageGallery);
     });
+}
+
+const showImage = (imageName, imagePath) => {
+    $("#showImageModal").show();
+    $("#showImageModalDiv").empty();
+    $("#showImageModalDiv").append("<img src='" + imagePath + "' class='display-image-container'/>")
+    $("#showImageModalLabel").text(imageName);
 }
 
 const initializeStatisticsCheckBox = () => {
@@ -678,6 +685,15 @@ const imageModalActionsCorrection = () => {
     $("#modalCloseButtonBottom").on("click", function (e) {
         e.preventDefault();
         $("#identifiedImageModal").hide();
+    });
+
+    $("#showImageModalCloseButtonTop").on("click", function (e) {
+        e.preventDefault();
+        $("#showImageModal").hide();
+    });
+    $("#showImageModalCloseButtonBottom").on("click", function (e) {
+        e.preventDefault();
+        $("#showImageModal").hide();
     });
 }
 
