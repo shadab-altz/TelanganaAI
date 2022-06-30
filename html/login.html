@@ -135,7 +135,9 @@
     <form class="login">
       <input class="un " type="text" align="center" placeholder="Username" type="text" name="userid">
       <input class="pass" type="password" align="center" placeholder="Password" type="password" name="pswrd">
-      <input class="submit" align="center" type="submit" onclick="check(this.form)" value="Login"/>	  
+      <input class="submit" align="center" type="button" onclick="check(this.form)" value="Login"/>
+    </br>
+      <h5 id="status" style="text-align: center;">Incorrect credentials, please try again</h5>
 	</form>
     </div>
 
@@ -149,6 +151,9 @@ var pass = window.btoa( form.pswrd.value );
 if(form.userid.value == "AICHALLENGE"){
   if (form.pswrd.value == "telangana"){
     window.open("http://13.126.211.244:8080/map", "");
+  }
+  else{
+    document.getElementById('status').innerHTML = "Incorrect credentials, please try again"
   }
 }
 
