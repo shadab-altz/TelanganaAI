@@ -38,7 +38,7 @@
                     Admin Navigation Panel
                 </div>
                 <div class="panel-component">
-                    <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();getMonthlySightingStatistics();" class="form-select form-select-sm select-style" aria-label="month">
+                    <select name="month" id="month" onchange="getCameraTrapLocations();getTelanganaRanges();getMonthlySightingStatistics();getSpeciesList();" class="form-select form-select-sm select-style" aria-label="month">
                         <option value="" selected>Month</option>
                         <option value="january">January</option>
                         <option value="february">February</option>
@@ -128,6 +128,16 @@
         <div id="rightDashboardTotalSightingsDiv" class="right-dashboard-totalsightings-panel"></div>
         <div id="rightDashboardTotalHumanInterferencePercentageDiv" class="right-dashboard-humaninterferencepercentage-panel"></div>
         <div id="rightDashboardFalseTriggersPercentageDiv" class="right-dashboard-falsetriggerspercentage-panel"></div>
+
+        <div id="rightDashboardTimeSliderDiv" class="right-dashboard-timeslider-panel">
+            <div class="panel-component">
+                <select name="species" id="species" onchange="showTimeSlider();" class="form-select form-select-sm select-style" aria-label="species">
+                    <option value="" selected>Select</option>
+                </select>
+                <!-- <label for="customRange2" class="form-label">Example range</label> -->
+                <input type="range" class="form-range species-time-slider" min="0" max="5" id="speciesTimeSlider">
+            </div>
+        </div>
 
         <div id="cameraImagesGallery" class="camera-images-gallery">
             <div id="cameraImagesGalleryHeader" class="camera-images-gallery-header">

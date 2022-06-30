@@ -4,6 +4,7 @@ const fs = require('fs');
 const uuid = require('uuid');
 const { request } = require('http');
 const AWS = require('aws-sdk');
+const path = require('path');
 
 var appMode;
 if(process.argv[2] == "dev")
@@ -149,6 +150,22 @@ const getMonthlySightingStatistics = (request, response) => {
     });
 }
 
+const getSpecies = (request, response) => {
+    const { month } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getSpecies($1)", [month])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getTelanganaCameraTrapLocations = (request, response) => {
     const { month } = request.body
     pool.connect()
@@ -191,7 +208,7 @@ const uploadImageFile = (request, response) => {
     if (request.files != null) {
         let imageInput = request.files.imageInput;
         var imageUUID = uuid.v4();
-        var _name = imageUUID +"_" + imageInput.name.replaceAllTxt(" ", "_");
+        var _name = imageUUID + path.extname(imageInput.name);
         var _fileUploadPath = fileUploadPath + _name;
         imageInput.mv(_fileUploadPath, function(err) {
             if (err)
@@ -261,7 +278,8 @@ module.exports ={
     getCameraStatistics,
     getSpeciesHeatmap,
     uploadImageFile,
-    polling
+    polling,
+    getSpecies
 }
 
 String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }

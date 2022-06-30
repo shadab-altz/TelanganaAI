@@ -356,6 +356,7 @@ const getTelanganaRanges = () => {
     .then(function(res) { return res.json(); })
     .then(function(data) {
         $("#range").empty();
+        $('#range').append( new Option("Select", "") );
         data.data.forEach((rangeItem) => {
             console.log(rangeItem.sp_range);
             $('#range').append( new Option(rangeItem.sp_range, rangeItem.sp_range) );
@@ -387,6 +388,7 @@ const getTelanganaSections = () => {
     .then(function(data) {
         $("#section").empty();
         sectionList = [...new Set(data.data.map(item => item.sp_sections))]
+        $('#section').append( new Option("Select", "") );
         sectionList.forEach((sectionItem) => {
             $('#section').append( new Option(sectionItem, sectionItem) );
         });
@@ -611,7 +613,7 @@ const polling = () => {
             $("#identifiedImageDiv").empty();
             $("#identifiedImageDiv").append("<img src='" + data.data[0].sp_ouput_image + "' class='display-image-container'/>")
             $("#detectedSpeciesLabel").text("Species: " + data.data[0].sp_species + ", ");
-            $("#detectedSpeciesCountLabel").text("Number: " + data.data[0].sp_count + ", ");
+            $("#detectedSpeciesCountLabel").text("Count: " + data.data[0].sp_count + ", ");
             $("#detectedAccuracyLabel").text("Accuracy: " + data.data[0].sp_accuracy + "%, ");
         }
         else{
@@ -622,6 +624,34 @@ const polling = () => {
     });
 }
 
+const getSpeciesList = () => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    fetch(getSpeciesURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        console.log(data.data);
+        $('#species').empty();
+        $('#species').append( new Option("Select", "") );
+        data.data.forEach((speciesItem) => {
+            $('#species').append( new Option(speciesItem.sp_species, speciesItem.sp_species) );
+        });
+    });
+}
+
+const showTimeSlider = () => {
+    $("#speciesTimeSlider").show();
+}
 
 const clearUploadedImage = () => {
     $("#imageInput").val('');

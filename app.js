@@ -84,6 +84,10 @@ app.post('/polling', function(request, response) {
     db.polling(request, response)
 });
 
+app.post('/getSpecies', function(request, response) {
+    db.getSpecies(request, response)
+});
+
 app.post('/getSpeciesHeatmap', function(request, response) {
     db.getSpeciesHeatmap(request, response)
 });

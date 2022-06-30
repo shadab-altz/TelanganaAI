@@ -137,6 +137,20 @@ END;
 $BODY$;
 
 
+--------- Get species list
+
+
+CREATE OR REPLACE FUNCTION sp_getSpecies(sp_month character varying) 
+returns table (sp_species character varying) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT DISTINCT(species) FROM %s', sp_month);
+END;
+$$;
+
+
 --------- Add image for dynamic detection
 
 

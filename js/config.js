@@ -13,6 +13,7 @@ const getSectionsCameraTrapsURL = 'http://' + server + ':' + port + '/getSection
 const getCameraimagesURL = 'http://' + server + ':' + port + '/getCameraimages';
 const uploadImageFileURL = 'http://' + server + ':' + port + '/uploadImageFile';
 const pollingURL = 'http://' + server + ':' + port + '/polling';
+const getSpeciesURL = 'http://' + server + ':' + port + '/getSpecies';
 const getSpeciesHeatmapURL = 'http://' + server + ':' + port + '/getSpeciesHeatmap';
 const getCameraStatisticsURL = 'http://' + server + ':' + port + '/getCameraStatistics';
 const getStateStatisticsURL = 'http://' + server + ':' + port + '/getStateStatistics';
