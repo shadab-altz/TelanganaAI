@@ -41,7 +41,72 @@ const initMap = () => {
     //getTelanganaBoundary();
     initializeStatisticsCheckBox();
     imageModalActionsCorrection();
+    //changeInteraction();
 }
+
+
+let select = null; 
+
+
+/* new ol.style.Style({
+    image: new ol.style.Icon({
+        anchor: [0.5, 46],
+        //size: [30, 30],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        rotation: item.sp_rotation,
+        src: '../icons/camera_trap.png'
+    }),
+}) */
+
+
+
+function selectStyle(feature) {
+    const color = feature.get('COLOR') || '#eeeeee';
+
+    var selected = new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({color: 'black'}),
+          stroke: new ol.style.Stroke({
+            color: [255,0,0], width: 2
+          })
+        })
+      })
+
+
+    /* const selected = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: '#00FF00',
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'rgba(0, 255, 0, 0.7)',
+          width: 2,
+        }),
+      }); */
+
+
+
+    selected.getFill().setColor(color);
+    return selected;
+  }
+
+  
+
+
+const changeInteraction = function () {
+    if (select !== null) {
+      map.removeInteraction(select);
+    }
+    const selectSingleClick = new ol.interaction.Select({style: selectStyle});
+    select = selectSingleClick;
+    if (select !== null) {
+      map.addInteraction(selectSingleClick);
+    }
+  };
+
+
+
 
 const getIndiaBasemap = () => {
     fetch(getIndiaBasemapURL,
@@ -339,6 +404,11 @@ const cameraTrapLocationPlotter = (data) => {
     });
 }
 
+
+
+
+
+
 const getTelanganaRanges = () => {
     var month = $("#month").val();
     if(month == "")
@@ -614,7 +684,7 @@ const polling = () => {
             $("#identifiedImageDiv").append("<img src='" + data.data[0].sp_ouput_image + "' class='display-image-container'/>")
             $("#detectedSpeciesLabel").text("Species: " + data.data[0].sp_species + ", ");
             $("#detectedSpeciesCountLabel").text("Count: " + data.data[0].sp_count + ", ");
-            $("#detectedAccuracyLabel").text("Accuracy: " + data.data[0].sp_accuracy + "%, ");
+            $("#detectedAccuracyLabel").text("Accuracy: " + data.data[0].sp_accuracy + ", ");
         }
         else{
             setTimeout(() => {
@@ -622,6 +692,14 @@ const polling = () => {
             }, 5000);
         }
     });
+}
+
+const toggleTimeSlider = () => {
+    if($("#rightDashboardTimeSliderDiv").is(":visible")) {
+        $("#rightDashboardTimeSliderDiv").hide();
+    }
+    else
+        $("#rightDashboardTimeSliderDiv").show();
 }
 
 const getSpeciesList = () => {
@@ -649,8 +727,107 @@ const getSpeciesList = () => {
     });
 }
 
+var sliderBucket = [];
+var sp_date = [];
 const showTimeSlider = () => {
     $("#speciesTimeSlider").show();
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    var species = $("#species").val();
+    fetch(getSpeciesRangesURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month,
+            species: species
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        sliderBucket = [];
+        sp_date = [];
+        console.log(data.data);
+        sliderBucket = data.data;
+        sp_date = [...new Set(sliderBucket.map(item => item.sp_from_date))]
+        console.log(sp_date);
+
+        // Assign slider ticks
+        $("#speciesTimeSlider").attr('min', 0);
+        $("#speciesTimeSlider").attr('max', sp_date.length - 1);
+
+        // Create Slide Bar
+        var slideTicks = $("#speciesTimeSlider").width()/sp_date.length;
+        console.log(slideTicks);
+        var sliderLeftPosition = slideTicks/2;
+        $("#slideBar").empty();
+        sp_date.forEach((dateItem)=> {
+            $("#slideBar").append(
+                    '<span style="left: ' + sliderLeftPosition + 'px;" class="species-slider-tick-bar"></span>'
+                +   '<label style="left: ' + sliderLeftPosition + 'px;" class="species-slider-tick-label">' + dateItem + '</label>'
+                );
+            sliderLeftPosition += slideTicks;
+        });
+        
+    });
+}
+
+const drawEventMap = (value) => {
+    var dateItem = sp_date[value];
+    var geometryBucket = sliderBucket.filter((x) => x.sp_from_date == dateItem);
+    geometryPlotter(geometryBucket);
+}
+
+const geometryPlotter = (geometryBucket) => {
+    console.log(geometryBucket);
+
+    sliderGeometryObject = {
+        'type': 'FeatureCollection',
+        'crs': {
+            'type': 'name',
+            'properties': {
+                'name': 'EPSG:3857',
+            },
+        },
+        'features': []
+    }
+
+    geometryBucket.forEach((item) => {
+        var geometry = JSON.parse(item.sp_location);
+        console.log("Style: " + geometry.type);
+        sliderGeometryObject.features.push({
+            'type': 'Feature',
+            'geometry': geometry
+        });
+    });
+
+    const vectorSource = new ol.source.Vector({
+        features: new ol.format.GeoJSON().readFeatures(sliderGeometryObject)
+    }); 
+
+    const vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        name: 'sliderGeometryLayer',
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                fill: null,
+                stroke: new ol.style.Stroke({color: 'white', width: 1}),
+              }),
+        })
+    });
+    map.getLayers().forEach(function (layer) {
+        if(layer.get('name') == "sliderGeometryLayer") {
+            map.removeLayer(layer);
+        }
+    });
+    map.addLayer(vectorLayer);
+    
+
+
 }
 
 const clearUploadedImage = () => {

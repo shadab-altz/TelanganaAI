@@ -166,6 +166,22 @@ const getSpecies = (request, response) => {
     });
 }
 
+const getSpeciesRanges = (request, response) => {
+    const { month, species } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getSpeciesRanges($1, $2)", [month, species])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getTelanganaCameraTrapLocations = (request, response) => {
     const { month } = request.body
     pool.connect()
@@ -279,7 +295,8 @@ module.exports ={
     getSpeciesHeatmap,
     uploadImageFile,
     polling,
-    getSpecies
+    getSpecies,
+    getSpeciesRanges
 }
 
 String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }

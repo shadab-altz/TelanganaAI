@@ -56,6 +56,7 @@
                 </div>
             </div>
             <div>
+                <button type="button" class="btn btn-primary btn-sm admin-panel-button" onclick="toggleTimeSlider()">Time Slider</button>
                 <button type="button" class="btn btn-primary btn-sm admin-panel-button" onclick="resetAdminPanel()">Reset</button>
             </div>
         </div>
@@ -129,13 +130,14 @@
         <div id="rightDashboardTotalHumanInterferencePercentageDiv" class="right-dashboard-humaninterferencepercentage-panel"></div>
         <div id="rightDashboardFalseTriggersPercentageDiv" class="right-dashboard-falsetriggerspercentage-panel"></div>
 
-        <div id="rightDashboardTimeSliderDiv" class="right-dashboard-timeslider-panel">
+        <div id="rightDashboardTimeSliderDiv" class="timeslider-panel">
             <div class="panel-component">
                 <select name="species" id="species" onchange="showTimeSlider();" class="form-select form-select-sm select-style" aria-label="species">
                     <option value="" selected>Select</option>
                 </select>
                 <!-- <label for="customRange2" class="form-label">Example range</label> -->
-                <input type="range" class="form-range species-time-slider" min="0" max="5" id="speciesTimeSlider">
+                <input type="range" class="form-range species-time-slider"  oninput="drawEventMap(this.value)" id="speciesTimeSlider">
+                <div id="slideBar"></div>
             </div>
         </div>
 

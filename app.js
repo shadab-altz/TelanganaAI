@@ -36,6 +36,10 @@ app.use(express.static(path.join(__dirname, '/css')))
 app.use(express.static(path.join(__dirname, '/js')))
 app.use(express.static(path.join(__dirname, '/img')))
 
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, '/html/login.html'));
+});
+
 app.get('/map', function(req, res) {
     res.sendFile(path.join(__dirname, '/html/map.html'));
 });
@@ -86,6 +90,10 @@ app.post('/polling', function(request, response) {
 
 app.post('/getSpecies', function(request, response) {
     db.getSpecies(request, response)
+});
+
+app.post('/getSpeciesRanges', function(request, response) {
+    db.getSpeciesRanges(request, response)
 });
 
 app.post('/getSpeciesHeatmap', function(request, response) {
