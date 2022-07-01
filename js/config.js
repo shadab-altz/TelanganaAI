@@ -6,6 +6,7 @@ const port = 8080;
 const getIndiaBasemapURL = 'http://' + server + ':' + port + '/getIndiaBasemap';
 const getTelanganaBoundaryURL = 'http://' + server + ':' + port + '/getTelanganaBoundary';
 const getTelanganaCameraTrapLocationsURL = 'http://' + server + ':' + port + '/getTelanganaCameraTrapLocations';
+const getDefaultLastWeekCameraTrapLocationsURL = 'http://' + server + ':' + port + '/getDefaultLastWeekCameraTrapLocations';
 const getDefaultLastWeekStatisticsURL = 'http://' + server + ':' + port + '/getDefaultLastWeekStatistics';
 const getMonthlySightingStatisticsURL = 'http://' + server + ':' + port + '/getMonthlySightingStatistics';
 const getRanges = 'http://' + server + ':' + port + '/getRanges';

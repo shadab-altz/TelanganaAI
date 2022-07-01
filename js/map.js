@@ -49,6 +49,7 @@ const initMap = () => {
     initializeStatisticsCheckBox();
     imageModalActionsCorrection();
     getDefaultLastWeekStatistics();
+    
     //changeInteraction();
 }
 
@@ -233,7 +234,8 @@ const getTelanganaBoundary = () => {
             map.addLayer(vectorLayer);
             telanganaStateExtents = vectorSource.getExtent();
             map.getView().fit(telanganaStateExtents);
-        })                
+        })
+        getDefaultLastWeekCameraTrapLocations();
     })
 }
 
@@ -276,6 +278,20 @@ const getDefaultLastWeekStatistics = () => {
             $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
         }
     });
+}
+
+const getDefaultLastWeekCameraTrapLocations = () => {
+    fetch(getDefaultLastWeekCameraTrapLocationsURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        cameraTrapLocationPlotter(data);
+    })
 }
 
 const getCameraTrapLocations = () => {

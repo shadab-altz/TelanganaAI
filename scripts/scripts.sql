@@ -174,6 +174,29 @@ END;
 $$;
 
 
+--------- Get Default camera sighting locations for last 7 days from last captured date
+
+
+CREATE OR REPLACE FUNCTION sp_getDefaultLastWeekSightingLocations() 
+returns table (sp_camera character varying, sp_rotation integer, sp_geometry text) 
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	maxDate Date;
+	minDate Date;
+BEGIN
+	maxDate := (SELECT MAX(to_date) FROM (SELECT * FROM january UNION SELECT * FROM february) AS A);
+	minDate := (SELECT maxDate - INTERVAL '7 days');
+	return query
+		SELECT DISTINCT(camera), rotation, ST_AsGeoJSON(ST_Transform(location, 3857)) FROM (
+			SELECT * FROM january UNION SELECT * FROM february
+		) AS A 
+		WHERE to_date <= maxDate AND to_date >= minDate
+		GROUP BY camera, rotation, location;
+END;
+$$;
+
+
 --------- Add image for dynamic detection
 
 
