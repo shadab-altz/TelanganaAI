@@ -137,7 +137,7 @@
       <input class="pass" type="password" align="center" placeholder="Password" type="password" name="pswrd">
       <input class="submit" align="center" type="button" onclick="check(this.form)" value="Login"/>
     </br>
-      <h5 id="status" style="text-align: center;">Incorrect credentials, please try again</h5>
+      <h5 id="status" style="text-align: center;"></h5>
 	</form>
     </div>
 
@@ -150,7 +150,7 @@ var pass = window.btoa( form.pswrd.value );
 
 if(form.userid.value == "AICHALLENGE"){
   if (form.pswrd.value == "telangana"){
-    window.open("http://13.126.211.244:8080/map", "");
+    window.open("http://taim.altztech.com:8080/map", "");
   }
   else{
     document.getElementById('status').innerHTML = "Incorrect credentials, please try again"

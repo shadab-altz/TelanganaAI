@@ -30,7 +30,7 @@
   "Development": {
     "appPort": 5000,
     "dbConfig": {
-      "host": "taim.cymswmtmfnab.ap-south-1.rds.amazonaws.com",
+      "host": "localhost",
       "database": "taim",
       "user": "postgres",
       "password": "postgres",

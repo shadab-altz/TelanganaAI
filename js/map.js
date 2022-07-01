@@ -499,6 +499,9 @@ const getSectionsCameraTraps = () => {
 }
 
 const getCameraimages = (camera) => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
     if(camera == undefined)
         return;
     fetch(getCameraimagesURL,
@@ -508,6 +511,7 @@ const getCameraimages = (camera) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
+            month: month,
             camera: camera
         })
     })
@@ -545,6 +549,9 @@ const initializeStatisticsCheckBox = () => {
 }
 
 const getCameraStatistics = (camera) => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
     if(camera == undefined)
         return;
     fetch(getCameraStatisticsURL,
@@ -554,6 +561,7 @@ const getCameraStatistics = (camera) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
+            month: month,
             camera: camera
         })
     })

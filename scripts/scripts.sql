@@ -67,26 +67,26 @@ $$;
 ---------- Get Camera Images
 
 
-CREATE OR REPLACE FUNCTION sp_getCameraimages(sp_camera character varying) 
+CREATE OR REPLACE FUNCTION sp_getCameraimages(sp_month character varying, sp_camera character varying) 
 returns table (sp_filename character varying, sp_village character varying, sp_latitude double precision, sp_longitude double precision, sp_fromdate text, sp_todate text, sp_filepath character varying) 
 LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT filename, village, latitude, longitude, from_date::text, to_date::text, filepath FROM january WHERE camera = ''%s'' ', sp_camera);
+	EXECUTE format('SELECT filename, village, latitude, longitude, from_date::text, to_date::text, filepath FROM %s WHERE camera = ''%s'' ', sp_month, sp_camera);
 END;
 $$;
 
 
 ---------- Get Camera Images Statistics
 
-CREATE OR REPLACE FUNCTION sp_getCameraStatistics(sp_camera character varying) 
+CREATE OR REPLACE FUNCTION sp_getCameraStatistics(sp_month character varying, sp_camera character varying) 
 returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
 LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM january WHERE camera = ''%s'' GROUP BY species, common_name', sp_camera);
+	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM %s WHERE camera = ''%s'' GROUP BY species, common_name', sp_month, sp_camera);
 END;
 $$;
 

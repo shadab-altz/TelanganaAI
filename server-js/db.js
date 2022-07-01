@@ -103,10 +103,10 @@ const getSectionsCameraTraps = (request, response) => {
 }
 
 const getCameraimages = (request, response) => {
-    const { camera } = request.body
+    const { month, camera } = request.body
     pool.connect()
     .then(client => {
-        return client.query("SELECT * FROM sp_getCameraimages($1)", [camera])
+        return client.query("SELECT * FROM sp_getCameraimages($1, $2)", [month, camera])
             .then(res => {
                 client.release();
                 response.status(200).send({data: res.rows})
@@ -119,10 +119,10 @@ const getCameraimages = (request, response) => {
 }
 
 const getCameraStatistics = (request, response) => {
-    const { camera } = request.body
+    const { month, camera } = request.body
     pool.connect()
     .then(client => {
-        return client.query("SELECT * FROM sp_getCameraStatistics($1)", [camera])
+        return client.query("SELECT * FROM sp_getCameraStatistics($1, $2)", [month, camera])
             .then(res => {
                 client.release();
                 response.status(200).send({data: res.rows})
