@@ -118,6 +118,21 @@ const getCameraimages = (request, response) => {
     });
 }
 
+const getDefaultLastWeekStatistics = (request, response) => {
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getDefaultLastWeekStatistics()")
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getCameraStatistics = (request, response) => {
     const { month, camera } = request.body
     pool.connect()
@@ -291,6 +306,7 @@ module.exports ={
     getMonthlySightingStatistics,
     getTelanganaCameraTrapLocations,
     getCameraimages,
+    getDefaultLastWeekStatistics,
     getCameraStatistics,
     getSpeciesHeatmap,
     uploadImageFile,

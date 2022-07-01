@@ -52,6 +52,10 @@ app.get('/getTelanganaBoundary', (request, response) => {
     db.getTelanganaBoundary(request, response)
 })
 
+app.get('/getDefaultLastWeekStatistics', (request, response) => {
+    db.getDefaultLastWeekStatistics(request, response)
+})
+
 app.post('/getRanges', function(request, response) {
     db.getRanges(request, response)
 });

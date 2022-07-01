@@ -28,7 +28,13 @@ const initMap = () => {
             pointer: true,
             select: true
         }),
-        layers: [],
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                  url: 'http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
+                })
+              })
+        ],
         target: 'map',
         view: mapview
     });
@@ -42,6 +48,7 @@ const initMap = () => {
     //getTelanganaBoundary();
     initializeStatisticsCheckBox();
     imageModalActionsCorrection();
+    getDefaultLastWeekStatistics();
     //changeInteraction();
 }
 
@@ -214,7 +221,7 @@ const getTelanganaBoundary = () => {
                     }),
                     fill: new ol.style.Fill({
                     //color: 'rgba(3, 145, 255, 0.7)',
-                    color: 'rgb(150, 0, 0, 1)'
+                    color: 'rgb(40, 170, 141, 0.4)'
                     }),
                 })
             });
@@ -228,6 +235,47 @@ const getTelanganaBoundary = () => {
             map.getView().fit(telanganaStateExtents);
         })                
     })
+}
+
+const getDefaultLastWeekStatistics = () => {
+    fetch(getDefaultLastWeekStatisticsURL,
+    {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var totalSightings = 0;
+        data.data.forEach((item)=> {
+            totalSightings += parseInt(item.sp_count);
+        })
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Human Disturbance')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'False Triggers');
+        var falseTriggers;
+        if(falseTriggerFilter.length)
+            falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
+        humanInterferencePercentage = (humanSightings/totalSightings) * 100;
+        falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
+
+        $("#rightDashboardTotalSightingsDiv").show();
+        $("#rightDashboardTotalSightingsDiv").empty();
+        $("#rightDashboardTotalSightingsDiv").append("<h5 class='totalsightings-label'>Last 7 days sightings</h5>");
+        $("#rightDashboardTotalSightingsDiv").append("<h1 class='totalsightings-count'>" + totalSightings + "</h1>");
+
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").show();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").empty();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
+
+        if(falseTriggerFilter.length) {
+            $("#rightDashboardFalseTriggersPercentageDiv").show();
+            $("#rightDashboardFalseTriggersPercentageDiv").empty();
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
+        }
+    });
 }
 
 const getCameraTrapLocations = () => {
@@ -274,7 +322,7 @@ const getMonthlySightingStatistics = () => {
         var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'False Triggers');
         var falseTriggers;
         if(falseTriggerFilter.length)
-            falseTriggers = parseInt([0].sp_count);
+            falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
         humanInterferencePercentage = (humanSightings/totalSightings) * 100;
         falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
 

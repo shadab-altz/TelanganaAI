@@ -151,6 +151,29 @@ END;
 $$;
 
 
+--------- Get Default Statistics for last 7 days from last captured date
+
+
+CREATE OR REPLACE FUNCTION sp_getDefaultLastWeekStatistics() 
+returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	maxDate Date;
+	minDate Date;
+BEGIN
+	maxDate := (SELECT MAX(to_date) FROM (SELECT * FROM january UNION SELECT * FROM february) AS A);
+	minDate := (SELECT maxDate - INTERVAL '7 days');
+	return query
+		SELECT DISTINCT(species), common_name, COUNT(species) FROM (
+			SELECT * FROM january UNION SELECT * FROM february
+		) AS A 
+		WHERE to_date <= maxDate AND to_date >= minDate
+		GROUP BY species, common_name;
+END;
+$$;
+
+
 --------- Add image for dynamic detection
 
 
