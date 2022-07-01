@@ -5,6 +5,7 @@ var IndiaExtents = null;
 var telanganaStateExtents = null;
 var cameraSpeciesStatistics = [];
 var cameraSpeciesStatisticsData = null;
+var cameraImagesQueued = false;
 
 const initMap = () => {
     var attribution = new ol.control.Attribution({
@@ -364,9 +365,12 @@ const cameraTrapLocationPlotter = (data) => {
     map.on('click', function(evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
             function(feature, layer) {
-            return feature;
-        });
+                return feature;
+            });
         if (feature) {
+            //shadab
+            if(cameraImagesQueued)
+                return;
             var cameraValue = feature.get('camera');
             if(cameraValue != undefined) {
                 getCameraimages(feature.get('camera'));
@@ -504,6 +508,7 @@ const getCameraimages = (camera) => {
         return;
     if(camera == undefined)
         return;
+    cameraImagesQueued = true;
     fetch(getCameraimagesURL,
     {
         method: "POST",
@@ -532,6 +537,7 @@ const getCameraimages = (camera) => {
             + "</span>";
         });
         $("#cameraImagesGalleryContent").html(imageGallery);
+        cameraImagesQueued = false;
     });
 }
 
