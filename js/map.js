@@ -253,8 +253,8 @@ const getDefaultLastWeekStatistics = () => {
         data.data.forEach((item)=> {
             totalSightings += parseInt(item.sp_count);
         })
-        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Human Disturbance')[0].sp_count);
-        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'False Triggers');
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Humans')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'Unknown');
         var falseTriggers;
         if(falseTriggerFilter.length)
             falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
@@ -274,7 +274,7 @@ const getDefaultLastWeekStatistics = () => {
         if(falseTriggerFilter.length) {
             $("#rightDashboardFalseTriggersPercentageDiv").show();
             $("#rightDashboardFalseTriggersPercentageDiv").empty();
-            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>Unknown percentage</h5>");
             $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
         }
     });
@@ -334,8 +334,8 @@ const getMonthlySightingStatistics = () => {
         data.data.forEach((item)=> {
             totalSightings += parseInt(item.sp_count);
         })
-        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Human Disturbance')[0].sp_count);
-        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'False Triggers');
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Humans')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'Unknown');
         var falseTriggers;
         if(falseTriggerFilter.length)
             falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
@@ -355,7 +355,7 @@ const getMonthlySightingStatistics = () => {
         if(falseTriggerFilter.length) {
             $("#rightDashboardFalseTriggersPercentageDiv").show();
             $("#rightDashboardFalseTriggersPercentageDiv").empty();
-            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>False triggers percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>Unknown percentage</h5>");
             $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
         }
     });
@@ -705,6 +705,8 @@ const resetAdminPanel = () => {
             }
         }
     });
+    getDefaultLastWeekStatistics();
+    getDefaultLastWeekCameraTrapLocations();
 }
 
 var imageIdentified = false;

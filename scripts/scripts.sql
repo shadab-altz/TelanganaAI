@@ -86,7 +86,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM %s WHERE camera = ''%s'' GROUP BY species, common_name', sp_month, sp_camera);
+	EXECUTE format('SELECT sl.scientific_name AS species, ism.common_name::varchar, COUNT(ism.uuid) FROM %s mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid INNER JOIN species_library sl ON sl.common_name = ism.common_name WHERE mon.camera = ''%s'' GROUP BY ism.common_name, sl.scientific_name', sp_month, sp_camera);
 END;
 $$;
 
@@ -100,7 +100,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT DISTINCT(species), common_name, COUNT(species) FROM %s GROUP BY species, common_name', sp_month);
+	EXECUTE format('SELECT sl.scientific_name AS species, ism.common_name::varchar, COUNT(ism.common_name) FROM %s mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid INNER JOIN species_library sl ON sl.common_name = ism.common_name GROUP BY ism.common_name, sl.scientific_name', sp_month);
 END;
 $$;
 
@@ -165,11 +165,7 @@ BEGIN
 	maxDate := (SELECT MAX(to_date) FROM (SELECT * FROM january UNION SELECT * FROM february) AS A);
 	minDate := (SELECT maxDate - INTERVAL '7 days');
 	return query
-		SELECT DISTINCT(species), common_name, COUNT(species) FROM (
-			SELECT * FROM january UNION SELECT * FROM february
-		) AS A 
-		WHERE to_date <= maxDate AND to_date >= minDate
-		GROUP BY species, common_name;
+		SELECT sl.scientific_name AS species, ism.common_name::varchar, COUNT(ism.common_name) FROM february mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid INNER JOIN species_library sl ON sl.common_name = ism.common_name WHERE to_date <= maxDate AND to_date >= minDate GROUP BY ism.common_name, sl.scientific_name;
 END;
 $$;
 
