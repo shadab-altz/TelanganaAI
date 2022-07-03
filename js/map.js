@@ -271,6 +271,8 @@ const getDefaultLastWeekStatistics = () => {
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
 
+        console.log("Unknown: " + falseTriggersPercentage.toFixed(2));
+        falseTriggerFilter = [];
         if(falseTriggerFilter.length) {
             $("#rightDashboardFalseTriggersPercentageDiv").show();
             $("#rightDashboardFalseTriggersPercentageDiv").empty();
@@ -352,6 +354,8 @@ const getMonthlySightingStatistics = () => {
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
         $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
 
+        console.log("Unknown: " + falseTriggersPercentage.toFixed(2));
+        falseTriggerFilter = [];
         if(falseTriggerFilter.length) {
             $("#rightDashboardFalseTriggersPercentageDiv").show();
             $("#rightDashboardFalseTriggersPercentageDiv").empty();
