@@ -897,8 +897,8 @@ const geometryPlotter = (geometryBucket) => {
         name: 'sliderGeometryLayer',
         style: new ol.style.Style({
             image: new ol.style.Circle({
-                radius: 5,
-                fill: null,
+                radius: 7,
+                fill: new ol.style.Fill({color: 'white'}),
                 stroke: new ol.style.Stroke({color: 'white', width: 1}),
               }),
         })

@@ -146,9 +146,29 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   return query 
-	EXECUTE format('SELECT DISTINCT(species) FROM %s', sp_month);
+	EXECUTE format('SELECT DISTINCT(common_name)::varchar FROM identified_species_map WHERE month = ''%s''', sp_month);
 END;
 $$;
+
+
+--------- Get location for species based on its common name
+
+
+CREATE OR REPLACE FUNCTION public.sp_getspeciesranges(
+	sp_month character varying,
+	sp_species character varying)
+    RETURNS TABLE(sp_from_date text, sp_location text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+  return query 
+	EXECUTE format('SELECT DISTINCT(mon.from_date::text) as "from_date", ST_AsGeoJSON(ST_Transform(mon.location, 3857)) as "location" FROM %s mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid WHERE ism.common_name = ''%s'' ORDER BY "from_date" ASC', sp_month, sp_species);
+END;
+$BODY$;
 
 
 --------- Get Default Statistics for last 7 days from last captured date
