@@ -45,12 +45,12 @@
                     </select>
                 </div>
                 <div class="panel-component">
-                    <select name="range" id="range" onchange="getTelanganaSections()" class="form-select form-select-sm select-style" aria-label="range">
+                    <select name="range" id="range" onchange="getTelanganaSections();getMonthlySpeciesSightingForRange();" class="form-select form-select-sm select-style" aria-label="range">
                         <option selected>Range</option>
                     </select>
                 </div>
                 <div class="panel-component">
-                    <select name="section" id="section" onchange="getSectionsCameraTraps()" class="form-select form-select-sm select-style" aria-label="section">
+                    <select name="section" id="section" onchange="getSectionsCameraTraps();getMonthlySpeciesSightingForRangeAndSection();" class="form-select form-select-sm select-style" aria-label="section">
                         <option selected>Section</option>
                       </select>
                 </div>

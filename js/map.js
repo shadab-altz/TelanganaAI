@@ -6,6 +6,9 @@ var telanganaStateExtents = null;
 var cameraSpeciesStatistics = [];
 var cameraSpeciesStatisticsData = null;
 var cameraImagesQueued = false;
+var imageIdentified = false;
+var pollid = '';
+
 
 const initMap = () => {
     var attribution = new ol.control.Attribution({
@@ -328,6 +331,116 @@ const getMonthlySightingStatistics = () => {
         },
         body: JSON.stringify({
             month: month
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var totalSightings = 0;
+        data.data.forEach((item)=> {
+            totalSightings += parseInt(item.sp_count);
+        })
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Humans')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'Unknown');
+        var falseTriggers;
+        if(falseTriggerFilter.length)
+            falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
+        humanInterferencePercentage = (humanSightings/totalSightings) * 100;
+        falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
+
+        $("#rightDashboardTotalSightingsDiv").show();
+        $("#rightDashboardTotalSightingsDiv").empty();
+        $("#rightDashboardTotalSightingsDiv").append("<h5 class='totalsightings-label'>Total sightings</h5>");
+        $("#rightDashboardTotalSightingsDiv").append("<h1 class='totalsightings-count'>" + totalSightings + "</h1>");
+
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").show();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").empty();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
+
+        console.log("Unknown: " + falseTriggersPercentage.toFixed(2));
+        falseTriggerFilter = [];
+        if(falseTriggerFilter.length) {
+            $("#rightDashboardFalseTriggersPercentageDiv").show();
+            $("#rightDashboardFalseTriggersPercentageDiv").empty();
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>Unknown percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
+        }
+    });
+}
+
+const getMonthlySpeciesSightingForRange = () => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    var range = $("#range").val();
+    if(range == "")
+        return;
+    fetch(getMonthlySpeciesSightingForRangeURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month,
+            range: range
+        })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        var totalSightings = 0;
+        data.data.forEach((item)=> {
+            totalSightings += parseInt(item.sp_count);
+        })
+        var humanSightings = parseInt(data.data.filter((x) => x.sp_species == 'Humans')[0].sp_count);
+        var falseTriggerFilter = data.data.filter((x) => x.sp_species == 'Unknown');
+        var falseTriggers;
+        if(falseTriggerFilter.length)
+            falseTriggers = parseInt(falseTriggerFilter[0].sp_count);
+        humanInterferencePercentage = (humanSightings/totalSightings) * 100;
+        falseTriggersPercentage = (falseTriggers/totalSightings) * 100;
+
+        $("#rightDashboardTotalSightingsDiv").show();
+        $("#rightDashboardTotalSightingsDiv").empty();
+        $("#rightDashboardTotalSightingsDiv").append("<h5 class='totalsightings-label'>Total sightings</h5>");
+        $("#rightDashboardTotalSightingsDiv").append("<h1 class='totalsightings-count'>" + totalSightings + "</h1>");
+
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").show();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").empty();
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h5 class='totalsightings-label'>Human interference percentage</h5>");
+        $("#rightDashboardTotalHumanInterferencePercentageDiv").append("<h1 class='totalsightings-count'>" + humanInterferencePercentage.toFixed(2) + "%</h1>");
+
+        console.log("Unknown: " + falseTriggersPercentage.toFixed(2));
+        falseTriggerFilter = [];
+        if(falseTriggerFilter.length) {
+            $("#rightDashboardFalseTriggersPercentageDiv").show();
+            $("#rightDashboardFalseTriggersPercentageDiv").empty();
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h5 class='totalsightings-label'>Unknown percentage</h5>");
+            $("#rightDashboardFalseTriggersPercentageDiv").append("<h1 class='totalsightings-count'>" + falseTriggersPercentage.toFixed(2) + "%</h1>");
+        }
+    });
+}
+
+const getMonthlySpeciesSightingForRangeAndSection = () => {
+    var month = $("#month").val();
+    if(month == "")
+        return;
+    var range = $("#range").val();
+    if(range == "")
+        return;
+    var section = $("#section").val();
+    if(section == "")
+        return;
+    fetch(getMonthlySpeciesSightingForRangeAndSectionURL,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            month: month,
+            range: range,
+            section: section
         })
     })
     .then(function(res) { return res.json(); })
@@ -709,12 +822,16 @@ const resetAdminPanel = () => {
             }
         }
     });
+    map.getLayers().forEach(function (layer) {
+        if(layer.get('name') == "sliderGeometryLayer") {
+            map.removeLayer(layer);
+        }
+    });
     getDefaultLastWeekStatistics();
     getDefaultLastWeekCameraTrapLocations();
 }
 
-var imageIdentified = false;
-var pollid = '';
+
 const uploadTestImage = () => {
     var imageFileFormData = new FormData($('#imageFileForm')[0]);
     if($("#imageInput").val() == '')
@@ -781,6 +898,15 @@ const polling = () => {
 const toggleTimeSlider = () => {
     if($("#rightDashboardTimeSliderDiv").is(":visible")) {
         $("#rightDashboardTimeSliderDiv").hide();
+        map.getLayers().forEach(function (layer) {
+            if(layer.get('name') == "sliderGeometryLayer") {
+                map.removeLayer(layer);
+            }
+        });
+        $("#species").empty();
+        $('#species').append( new Option("Select", "") );
+        $("#slideBar").empty();
+        $("#speciesTimeSlider").hide();
     }
     else
         $("#rightDashboardTimeSliderDiv").show();
@@ -844,18 +970,28 @@ const showTimeSlider = () => {
         $("#speciesTimeSlider").attr('max', sp_date.length - 1);
 
         // Create Slide Bar
-        var slideTicks = $("#speciesTimeSlider").width()/sp_date.length;
-        console.log(slideTicks);
-        var sliderLeftPosition = slideTicks/2;
+        var slideTicks = $("#speciesTimeSlider").width()/(sp_date.length - 1);
+        console.log(slideTicks, sp_date.length);
+        var sliderLeftPosition = slideTicks;
         $("#slideBar").empty();
-        sp_date.forEach((dateItem)=> {
+        $("#slideBar").append(
+            '<span style="left: ' + 20 + 'px;" class="species-slider-tick-bar"></span>'
+        +   '<label style="left: ' + 20 + 'px;" class="species-slider-tick-label">' + sp_date[0] + '</label>'
+        );
+        for(var i = 1; i<sp_date.length; i++){
+            var leftPos = (slideTicks * i)  + 20;
+            console.log("=> " + leftPos);
+            var barStyle = "left: " + leftPos + "px;";
+            var labelStyle = "left: " + leftPos + "px;";
+            if(i == sp_date.length - 1) {
+                console.log("LAST: " + i);
+                labelStyle = "left: " + leftPos + "px; margin-left: -45px;";
+            }
             $("#slideBar").append(
-                    '<span style="left: ' + sliderLeftPosition + 'px;" class="species-slider-tick-bar"></span>'
-                +   '<label style="left: ' + sliderLeftPosition + 'px;" class="species-slider-tick-label">' + dateItem + '</label>'
-                );
-            sliderLeftPosition += slideTicks;
-        });
-        
+                '<span style="' + barStyle + '" class="species-slider-tick-bar"></span>'
+            +   '<label style="' + labelStyle +  '" class="species-slider-tick-label">' + sp_date[i] + '</label>'
+            );
+        }
     });
 }
 

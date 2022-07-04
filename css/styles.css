@@ -150,18 +150,23 @@ body{
     margin-top: 30px;
 }
 
+.species-slider-bar {
+    margin-left: 20px;
+}
+
 .species-slider-tick-bar {
     position: absolute;
     width: 1px;
     height: 19px;
     background-color: white;
-    top: 87px;
+    top: 93px;
 }
 
 .species-slider-tick-label {
     position: absolute;
     font-size: 9px;
     color: #fbff9e;
+    top: 110px;
 }
 
 .display-image-modal {

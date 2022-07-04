@@ -84,6 +84,14 @@ app.post('/getMonthlySightingStatistics', function(request, response) {
     db.getMonthlySightingStatistics(request, response)
 });
 
+app.post('/getMonthlySpeciesSightingForRange', function(request, response) {
+    db.getMonthlySpeciesSightingForRange(request, response)
+});
+
+app.post('/getMonthlySpeciesSightingForRangeAndSection', function(request, response) {
+    db.getMonthlySpeciesSightingForRangeAndSection(request, response)
+});
+
 app.post('/getTelanganaCameraTrapLocations', function(request, response) {
     db.getTelanganaCameraTrapLocations(request, response)
 });

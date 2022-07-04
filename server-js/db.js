@@ -180,6 +180,38 @@ const getMonthlySightingStatistics = (request, response) => {
     });
 }
 
+const getMonthlySpeciesSightingForRange = (request, response) => {
+    const { month, range } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getMonthlySpeciesSightingForRange($1, $2)", [month, range])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
+const getMonthlySpeciesSightingForRangeAndSection = (request, response) => {
+    const { month, range, section } = request.body
+    pool.connect()
+    .then(client => {
+        return client.query("SELECT * FROM sp_getMonthlySpeciesSightingForRangeAndSection($1, $2, $3)", [month, range, section])
+            .then(res => {
+                client.release();
+                response.status(200).send({data: res.rows})
+            })
+            .catch(e => {
+                client.release();
+                console.log(e)
+            })
+    });
+}
+
 const getSpecies = (request, response) => {
     const { month } = request.body
     pool.connect()
@@ -319,6 +351,8 @@ module.exports ={
     getSections,
     getSectionsCameraTraps,
     getMonthlySightingStatistics,
+    getMonthlySpeciesSightingForRange,
+    getMonthlySpeciesSightingForRangeAndSection,
     getTelanganaCameraTrapLocations,
     getCameraimages,
     getDefaultLastWeekStatistics,

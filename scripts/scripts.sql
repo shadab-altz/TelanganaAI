@@ -105,6 +105,34 @@ END;
 $$;
 
 
+--------- Get monthly statistics Range wise
+
+
+CREATE OR REPLACE FUNCTION sp_getMonthlySpeciesSightingForRange(sp_month character varying, sp_range character varying) 
+returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT sl.scientific_name AS species, ism.common_name::varchar, COUNT(ism.common_name) FROM %s mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid INNER JOIN species_library sl ON sl.common_name = ism.common_name WHERE mon.range = ''%s'' GROUP BY ism.common_name, sl.scientific_name', sp_month, sp_range);
+END;
+$$;
+
+
+--------- Get monthly statistics Range and Section wise
+
+
+CREATE OR REPLACE FUNCTION sp_getMonthlySpeciesSightingForRangeAndSection(sp_month character varying, sp_range character varying, sp_section character varying) 
+returns table (sp_species character varying, sp_common_name character varying, sp_count bigint) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  return query 
+	EXECUTE format('SELECT sl.scientific_name AS species, ism.common_name::varchar, COUNT(ism.common_name) FROM %s mon INNER JOIN identified_species_map ism ON mon.uuid = ism.uuid INNER JOIN species_library sl ON sl.common_name = ism.common_name WHERE mon.range = ''%s'' AND mon.section = ''%s'' GROUP BY ism.common_name, sl.scientific_name', sp_month, sp_range, sp_section);
+END;
+$$;
+
+
 --------- Get the species coordinates
 
 
